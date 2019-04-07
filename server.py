@@ -169,9 +169,9 @@ def another():
 
 @app.route('/search', methods=['GET'])
 def search():
-  name = request.args.get('id', None)
+  name = request.args.get('mid', None)
   print(name)
-  cursor = g.conn.execute('SELECT gross FROM Movie WHERE title=%s', name)
+  cursor = g.conn.execute('SELECT mid FROM Movie WHERE title=%s', name)
   mids = []
   for result in cursor:
     mids.append(result['mid'])  # can also be accessed using result[0]
