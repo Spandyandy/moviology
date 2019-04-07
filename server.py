@@ -34,7 +34,7 @@ app = Flask(__name__, template_folder=tmpl_dir)
 #
 #     DATABASEURI = "postgresql://biliris:foobar@104.196.18.7/w4111"
 #
-DATABASEURI = "postgresql://user:password@104.196.18.7/w4111"
+DATABASEURI = "postgresql://jk4249:junghu23@34.73.21.127/proj1part2"
 
 
 #
@@ -51,7 +51,7 @@ engine.execute("""CREATE TABLE IF NOT EXISTS test (
   name text
 );""")
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
-
+print("Success");
 
 @app.before_request
 def before_request():
