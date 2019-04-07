@@ -169,17 +169,17 @@ def another():
 
 @app.route('/search', methods=['GET'])
 def search():
-  name = request.args.get('mid', None)
-  print(name)
-  cursor = g.conn.execute('SELECT mid FROM Movie WHERE title=%s', name)
+  name = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT mid FROM movie WHERE title=%s', name)
   mids = []
   for result in cursor:
     mids.append(result['mid'])  # can also be accessed using result[0]
   cursor.close()
-  print(mids)
-  context = dict(data = mids)
+  context = dict(data2=mids)
 
-  return render_template('results.html', **context)
+  print(context)
+
+  return render_template('results.html', mids)
 
 # @app.route('results/<mid>')
 # def results(mid)
