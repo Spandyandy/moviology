@@ -167,6 +167,21 @@ def another():
   return render_template("another.html")
 
 
+@app.route('/search', methods=['GET'])
+def search():
+  name = request.form['name']
+  cursor = g.conn.execute('SELECT gross FROM Movie WHERE title=%s', name)
+  mids = []
+  for result in cursor:
+    mid.append(result['mid'])  # can also be accessed using result[0]
+  cursor.close()
+  context = dict(data = mid)
+
+  return render_template('results.html', **context)
+
+# @app.route('results/<mid>')
+# def results(mid)
+
 # Example of adding new data to the database
 @app.route('/add', methods=['POST'])
 def add():
