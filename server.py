@@ -169,13 +169,15 @@ def another():
 
 @app.route('/search', methods=['GET'])
 def search():
-  name = request.form['name']
+  name = request.args.get('id', None)
+  print(name)
   cursor = g.conn.execute('SELECT gross FROM Movie WHERE title=%s', name)
   mids = []
   for result in cursor:
-    mid.append(result['mid'])  # can also be accessed using result[0]
+    mids.append(result['mid'])  # can also be accessed using result[0]
   cursor.close()
-  context = dict(data = mid)
+  print(mids)
+  context = dict(data = mids)
 
   return render_template('results.html', **context)
 
