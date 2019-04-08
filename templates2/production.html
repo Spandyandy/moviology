@@ -1,0 +1,48 @@
+<html>
+<header><a href="/"><h1>Moviology</h1></a></header>
+<body>
+                <div>
+			{% for row in result[0] %}
+			<h1>{{ row['name'] }}</h1>
+
+			<h2>Age : {{ row['age'] }}</h2>
+
+			<h2>Nationality : {{ row['nationality'] }}</h2>
+
+			<h2>Role : {{ row['title'] }}<p>
+			{% endfor %}
+			
+			<h2>Languages : </h2>
+                        {% for p in result[2] %}
+                        <div>
+                        <form method="GET" action="/language">
+                        <input type="hidden" name="name" value={{p['lid']}}>
+                        <button type="submit" class="link-button">{{p['languagename']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}		
+
+			<h2>Films : 
+			{% for row in result[1] %}
+			<div>
+                        <form method="GET" action="/title">
+                        <input type="hidden" name="name" value={{row['mid']}}>
+                        <button type="submit" class="link-button">{{row['title']}}</button>
+                        </form>			
+			</div>
+			{% endfor %}
+
+			<h2>Production Company (Crew) : </h2>
+                        {% for p in result[3] %}
+                        <div>
+                        <form method="GET" action="/company">
+                        <input type="hidden" name="name" value={{p['pc_id']}}>
+                        <button type="submit" class="link-button">{{p['title']}}</button>
+                        </form>
+			<h3> Since {{p['since']}} </h3>
+                        </div>
+                        {% endfor %}
+
+                </div>
+
+</body></html>

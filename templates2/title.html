@@ -1,0 +1,75 @@
+<html>
+<header><a href="/"><h1>Moviology</h1></a></header>
+<body>
+                <div>
+			{% for row in result[0] %}
+			<h1>{{ row['title'] }}</h1>
+
+			<h2>Release Date : {{ row['release_date'] }}</h2>
+
+			<h2>Content Rating : {{ row['content_rating'] }}</h2>
+
+			<h2>Running Time : {{ row['running_time']//60 }}h {{ row['running_time']%60 }}min</h2>
+
+			<h2>Gross (Box Office) : {{ row['gross'] }}</h2>
+
+			<h2>Story Line : </h2>
+			
+
+			<p>{{ row['storyline'] }}<p>
+			
+			{% endfor %}
+			<h2>Languages : </h2>
+                        {% for p in result[4] %}
+                        <div>
+                        <form method="GET" action="/language">
+                        <input type="hidden" name="name" value={{p['lid']}}>
+                        <button type="submit" class="link-button">{{p['languagename']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}
+
+			<h2>Actors : </h2>
+			{% for p in result[1] %}
+			<div>
+			<form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{p['pid']}}>
+                        <button type="submit" class="link-button">{{p['name']}}</button>
+                        </form>
+			</div>
+			{% endfor %}
+
+			<h2>Directors : </h2>
+                        {% for p in result[2] %}
+                        <div>
+                        <form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{p['pid']}}>
+                        <button type="submit" class="link-button">{{p['name']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}
+			
+			<h2>Writers : </h2>
+                        {% for p in result[3] %}
+                        <div>
+                        <form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{p['pid']}}>
+                        <button type="submit" class="link-button">{{p['name']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}
+	
+			<h2>Production Company : </h2>
+                        {% for p in result[5] %}
+                        <div>
+                        <form method="GET" action="/company">
+                        <input type="hidden" name="name" value={{p['pc_id']}}>
+                        <button type="submit" class="link-button">{{p['title']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}
+
+			
+                </div>
+
+</body></html>
