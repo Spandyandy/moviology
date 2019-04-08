@@ -1,0 +1,53 @@
+<html>
+<header><a href="/"><h1>Moviology</h1></a></header>
+<body>
+                <div>
+			{% for res in result[0] %}
+			<h1>Language : {{ res['languagename'] }}</h1>
+			{% endfor %}
+			
+			<h2>Films : </h2> 
+                        {% for row in result[4] %}
+                        <div>
+                        <form method="GET" action="/title">
+                        <input type="hidden" name="name" value={{row['mid']}}>
+                        <button type="submit" class="link-button">{{row['title']}}</button>
+                        </form>                 
+                        </div>
+                        {% endfor %}		
+				
+			<h2>Actors : </h2>
+			{% for p in result[1] %}
+			<div>
+			<form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{p['pid']}}>
+                        <button type="submit" class="link-button">{{p['name']}}</button>
+                        </form>
+			</div>
+			{% endfor %}
+
+			<h2>Directors : </h2>
+                        {% for p in result[2] %}
+                        <div>
+                        <form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{p['pid']}}>
+                        <button type="submit" class="link-button">{{p['name']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}
+			
+			<h2>Writers : </h2>
+                        {% for p in result[3] %}
+                        <div>
+                        <form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{p['pid']}}>
+                        <button type="submit" class="link-button">{{p['name']}}</button>
+                        </form>
+                        </div>
+                        {% endfor %}
+	
+
+	
+                </div>
+
+</body></html>

@@ -46,13 +46,14 @@ engine = create_engine(DATABASEURI)
 # Example of running queries in your database
 # Note that this will probably not work if you already have a table named 'test' in your database, containing meaningful data. This is only an example showing you how to run queries in your database using SQLAlchemy.
 #
+'''
 engine.execute("""CREATE TABLE IF NOT EXISTS test (
   id serial,
   name text
 );""")
 engine.execute("""INSERT INTO test(name) VALUES ('grace hopper'), ('alan turing'), ('ada lovelace');""")
 print("Success");
-
+'''
 @app.before_request
 def before_request():
   """
@@ -106,6 +107,8 @@ def index():
   See its API: http://flask.pocoo.org/docs/0.10/api/#incoming-request-data
   """
 
+
+  
   # DEBUG: this is debugging code to see what request looks like
   print request.args
 
@@ -113,11 +116,12 @@ def index():
   #
   # example of a database query
   #
-  cursor = g.conn.execute("SELECT name FROM test")
-  names = []
-  for result in cursor:
-    names.append(result['name'])  # can also be accessed using result[0]
+  cursor = g.conn.execute("SELECT lid, languagename FROM language")
+  cursor2 = g.conn.execute("SELECT pc_id, title FROM production_company")
+  res = cursor.fetchall();
+  res2 = cursor2.fetchall();
   cursor.close()
+  cursor2.close()
 
   #
   # Flask uses Jinja templates, which is an extension to HTML where you can
@@ -145,14 +149,18 @@ def index():
   #     <div>{{n}}</div>
   #     {% endfor %}
   #
-  context = dict(data = names)
 
 
   #
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
-  return render_template("index.html", **context)
+  return render_template("index.html", result = [res,res2])
+
+
+
+
+
 
 #
 # This is an example of a different path.  You can see it at:
@@ -166,23 +174,128 @@ def index():
 def another():
   return render_template("another.html")
 
+@app.route('/list', methods=['GET'])
+def list():
+  name = request.args.get('name', None)
+  if(name != None):
+    cursor = g.conn.execute('SELECT P.*, R.title FROM Production P, has_Role H, Role R WHERE H.rid=%s and H.pid=P.pid AND R.rid=H.rid', name)
+  else:
+    cursor = g.conn.execute('SELECT mid, title, release_date FROM movie')
+
+  res = []
+  for r in cursor:
+    res.append(r)
+  cursor.close()
+  if(name!=None):
+    return render_template('list.html', result = res)
+  else:
+    return render_template('list2.html', result = res)
+
 
 @app.route('/search', methods=['GET'])
 def search():
   name = request.args.get('name', None)
-  cursor = g.conn.execute('SELECT mid FROM movie WHERE title=%s', name)
-  mids = []
-  for result in cursor:
-    mids.append(result['mid'])  # can also be accessed using result[0]
+  cursor = g.conn.execute('SELECT mid, release_date FROM movie WHERE title=%s', name)
+  
+  res = []
+  for r in cursor:
+    res.append(r)  # can also be accessed using result[0]
   cursor.close()
-  context = dict(data2=mids)
+  return render_template('results.html', result = res)
 
-  print(context)
+@app.route('/searchprod', methods=['GET'])
+def searchprod():
+  name = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT P.*, R.title FROM Production P, has_Role H, Role R WHERE P.name=%s and H.pid=P.pid AND R.rid=H.rid', name)
+  
+  res = []
+  for r in cursor:
+    res.append(r)  # can also be accessed using result[0]
+  cursor.close()
+  return render_template('resultprods.html', result = res)
 
-  return render_template('results.html', mids)
 
-# @app.route('results/<mid>')
-# def results(mid)
+@app.route('/company', methods=['GET'])
+def company():
+  pcid = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT * FROM production_company WHERE pc_id=%s', pcid)
+  cursor2 = g.conn.execute('SELECT P.pid, P.name, W.since FROM Production P, works_for W, Production_company PC, has_role H WHERE PC.pc_id=W.pc_id and W.pid=P.pid AND H.pid=P.pid and H.rid = 0 and PC.pc_id=%s', pcid)
+  cursor3 = g.conn.execute('SELECT P.pid, P.name, W.since FROM Production P, works_for W, Production_company PC, has_role H WHERE PC.pc_id=W.pc_id and W.pid=P.pid AND H.pid=P.pid and H.rid = 1 and PC.pc_id=%s', pcid)
+  cursor4 = g.conn.execute('SELECT P.pid, P.name, W.since FROM Production P, works_for W, Production_company PC, has_role H WHERE PC.pc_id=W.pc_id and W.pid=P.pid AND H.pid=P.pid and H.rid = 2 and PC.pc_id=%s', pcid)
+  cursor5 = g.conn.execute('SELECT M.mid, M.title FROM Movie M, produces P WHERE M.mid=P.mid and P.pc_id=%s', pcid)
+  res = cursor.fetchall()
+  res2 = cursor2.fetchall()
+  res3 = cursor3.fetchall()
+  res4 = cursor4.fetchall()
+  res5 = cursor5.fetchall()
+  cursor.close()
+  cursor2.close()
+  cursor3.close()
+  cursor4.close()
+  cursor5.close()
+  return render_template('company.html', result = [res,res2,res3,res4,res5])
+
+
+@app.route('/language', methods=['GET'])
+def language():
+  lid = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT languagename FROM language WHERE lid=%s', lid)
+  cursor2 = g.conn.execute('SELECT P.pid, P.name FROM Production P, speaks S, has_role H WHERE S.pid=P.pid and H.pid=P.pid AND H.rid = 0 and S.lid=%s', lid)
+  cursor3 = g.conn.execute('SELECT P.pid, P.name FROM Production P, speaks S, has_role H WHERE S.pid=P.pid and H.pid=P.pid AND H.rid = 1 and S.lid=%s', lid)
+  cursor4 = g.conn.execute('SELECT P.pid, P.name FROM Production P, speaks S, has_role H WHERE S.pid=P.pid and H.pid=P.pid AND H.rid = 2 and S.lid=%s', lid)
+  cursor5 = g.conn.execute('SELECT M.mid, M.title FROM Movie M, use_lang U WHERE M.mid=U.mid and U.lid=%s', lid)
+  res = cursor.fetchall()
+  res2 = cursor2.fetchall()
+  res3 = cursor3.fetchall()
+  res4 = cursor4.fetchall()
+  res5 = cursor5.fetchall()
+  cursor.close()
+  cursor2.close()
+  cursor3.close()
+  cursor4.close()
+  cursor5.close()
+  return render_template('language.html', result = [res,res2,res3,res4,res5])
+
+@app.route('/title', methods=['GET'])
+def title():
+  mid = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT * FROM movie WHERE mid=%s', mid)
+  cursor2 = g.conn.execute('SELECT P.* FROM makes A, Production P, has_role H WHERE P.pid=A.pid AND H.pid=P.pid AND H.rid=0 and A.mid=%s', mid)
+  cursor3 = g.conn.execute('SELECT P.* FROM makes A, Production P, has_role H WHERE P.pid=A.pid AND H.pid=P.pid AND H.rid=1 and A.mid=%s', mid)
+  cursor4 = g.conn.execute('SELECT P.* FROM makes A, Production P, has_role H WHERE P.pid=A.pid AND H.pid=P.pid AND H.rid=2 and A.mid=%s', mid)
+  cursor5 = g.conn.execute('SELECT L.* FROM language L, use_lang U WHERE L.lid=U.lid AND U.mid=%s',mid)
+  cursor6 = g.conn.execute('SELECT PC.pc_id, PC.title FROM production_company PC, produces P WHERE PC.pc_id=P.pc_id AND P.mid=%s',mid)
+  res = cursor.fetchall()
+  res2 = cursor2.fetchall()
+  res3 = cursor3.fetchall()
+  res4 = cursor4.fetchall()
+  res5 = cursor5.fetchall()
+  res6 = cursor6.fetchall()
+  cursor.close()
+  cursor2.close()
+  cursor3.close()
+  cursor4.close()
+  cursor5.close()
+  cursor6.close()
+  return render_template('title.html', result = [res,res2,res3,res4,res5,res6])
+
+@app.route('/production', methods=['GET'])
+def production():
+  pid = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT P.*, R.title FROM Production P, has_Role H, Role R WHERE P.pid=%s and H.pid=P.pid AND R.rid=H.rid', pid)
+  cursor2 = g.conn.execute('SELECT M.title, E.mid FROM Movie M, makes E, Production P WHERE P.pid=%s and E.pid=P.pid AND M.mid=E.mid', pid)
+  cursor3 = g.conn.execute('SELECT L.* FROM language L, speaks S WHERE L.lid=S.lid AND S.pid=%s',pid)
+  cursor4 = g.conn.execute('SELECT PC.pc_id, PC.title, P.since FROM production_company PC, works_for P WHERE PC.pc_id=P.pc_id AND P.pid=%s',pid)
+  res = cursor.fetchall()
+  res2 = cursor2.fetchall()
+  res3 = cursor3.fetchall()
+  res4 = cursor4.fetchall()
+  cursor.close()
+  cursor2.close()
+  cursor3.close()
+  cursor4.close()
+  return render_template('production.html', result = [res,res2,res3,res4])
+
 
 # Example of adding new data to the database
 @app.route('/add', methods=['POST'])

@@ -20,20 +20,18 @@
   color:red;
 }</style>
 	<body>
-		<h1>Search Results for "{{request.args.get('name')}}"</h1>
 		<div>
 			<h2>Titles</h2>
-			{% for row in result %}
-			<div>
-			<form method="GET" action="/title">
+                        {% for row in result %}
+                        <div>
+                        <form method="GET" action="/title">
                         <input type="hidden" name="name" value={{row['mid']}}>
-                        <button type="submit" class="link-button">{{request.args.get('name')}}</button>
+                        <button type="submit" class="link-button">{{row['title']}}</button>
                         </form>
                         <h3>Release Date : {{ row['release_date'] }}</h3>
-			</div>
-			{% endfor %}
+                        </div>
+                        {% endfor %}
 
-			</div>
 		</div>
 	</body>
 </html>

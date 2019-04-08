@@ -22,14 +22,17 @@
 	<body>
 		<h1>Search Results for "{{request.args.get('name')}}"</h1>
 		<div>
-			<h2>Titles</h2>
+			<h2>Production names</h2>
 			{% for row in result %}
 			<div>
-			<form method="GET" action="/title">
-                        <input type="hidden" name="name" value={{row['mid']}}>
+			<form method="GET" action="/production">
+                        <input type="hidden" name="name" value={{row['pid']}}>
                         <button type="submit" class="link-button">{{request.args.get('name')}}</button>
                         </form>
-                        <h3>Release Date : {{ row['release_date'] }}</h3>
+                        <h3>Age : {{ row['age'] }}</h3>
+                        <h3>Nationality : {{ row['nationality'] }}</h3>
+                        <h3>Role : {{ row['title'] }}</h3>
+			------------------------------------
 			</div>
 			{% endfor %}
 

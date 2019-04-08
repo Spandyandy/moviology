@@ -8,21 +8,64 @@
 
 
 <body>
-  <h1>Some famous Computer Scientists</h1>
-  <div>{{data}}</div>
-
-  <div>
-    {% for n in data %}
-    <div>{{n}}</div>
-    {% endfor %}
-  </div>
-
+  <a href="/"><h1>Moviology</h1></a>
+  <h2>Search any film you would like to learn more!</h2>
 <p><a href="another">Go to the other page</a></p>
 
 <form method="GET" action="/search">
 <p>Name of movie to search: <input type="text" name="name"> <input type="submit" value="Search"></p>
 </form>
+<form method="GET" action="/searchprod">
+<p>Name of production(actor, producer, etc) name to search: <input type="text" name="name"> <input type="submit" value="Search"></p>
+</form>
 
+
+<a href="list">List of all movies</a></p>
+
+List by roles:
+<form method="GET" action="/list">
+<input type="hidden" name="name" value=0>
+<button type="submit" class="link-button">Actor</button>
+</form>  
+<form method="GET" action="/list">
+<input type="hidden" name="name" value=1>
+<button type="submit" class="link-button">Director</button>
+</form>  
+<form method="GET" action="/list">
+<input type="hidden" name="name" value=2>
+<button type="submit" class="link-button">Writer</button>
+</form>
+
+
+
+List by languages:
+<form method="GET" action="/language">
+<select name="name">
+{% for lang in result[0] %}
+<option value={{ lang['lid'] }}>{{lang['languagename']}}</option>
+{% endfor %}
+<input value="Submit" type="submit">
+</select>
+
+</form>  
+
+
+List by Production company:
+<form method="GET" action="/company">
+<select name="name">
+{% for comp in result[1] %}
+<option value={{ comp['pc_id'] }}>{{comp['title']}}</option>
+{% endfor %}
+<input value="Submit" type="submit">
+</select>
+
+</form>  
+
+
+
+
+
+<!-- 
 <form method="POST" action="/add">
 <p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Add"></p>
 </form>
@@ -30,7 +73,7 @@
 <form method="POST" action="/delete">
 <p>Name of new computer scientist: <input type="text" name="name"> <input type="submit" value="Delete"></p>
 </form>
-
+-->
 
 </body>
 
