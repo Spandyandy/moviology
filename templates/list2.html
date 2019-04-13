@@ -1,34 +1,40 @@
 <html>
-<header><a href="/"><h1>Moviology</h1></a></header>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<a href="/"><h1 class="p-3 mb-2 bg-primary text-white">Moviology</h1></a></head>
 	<style>.inline {
   display: inline;
 }
 
-.link-button {
-  background: none;
-  border: none;
-  color: blue;
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 1em;
-  font-family: serif;
-}
-.link-button:focus {
-  outline: none;
-}
-.link-button:active {
-  color:red;
-}</style>
+</style>
 	<body>
 		<div>
-			<h2>Titles</h2>
-                        {% for row in result %}
-                        <div>
+			<form method="GET" action="/list">
+			Sort by
+			<select name="sort">
+			{% for g in ["title", "release_date DESC", "content_rating", "running_time", "gross"] %}
+			<option value={{ g }}>{{g}}</option>
+			{% endfor %}
+			<input value="Sort" type="submit">
+			</select>
+			</form>
+			<br/>
+			<h4 style="color: 0000cf">Sorted by {{result[0]}}</h4>
+			<h2 class="display-1" style="margin: 30px 150px">Titles</h2>
+                        {% for row in result[1:] %}
+                        <!-- <div class="p-3 mb-2 bg-light text-dark border border-primary container-fluid" style="margin-top: 50px;"> -->
+			<div class="card bg-light mb-3" style="max-width: 30%;">
                         <form method="GET" action="/title">
                         <input type="hidden" name="name" value={{row['mid']}}>
-                        <button type="submit" class="link-button">{{row['title']}}</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">{{row['title']}}</button>
                         </form>
-                        <h3>Release Date : {{ row['release_date'] }}</h3>
+                        <h4>Release Date : {{ row['release_date'] }}</h4>
+
+                        <h4>Content Rating : {{ row['content_rating'] }}</h4>
+
+                        <h4>Running Time : {{ row['running_time']//60 }}h {{ row['running_time']%60 }}min</h4>
+
+                        <h4>Gross (Box Office) : {{ row['gross'] }}</h4>
                         </div>
                         {% endfor %}
 

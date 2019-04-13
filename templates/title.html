@@ -1,24 +1,36 @@
 <html>
-<header><a href="/"><h1>Moviology</h1></a></header>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<a href="/"><h1 class="p-3 mb-2 bg-primary text-white">Moviology</h1></a></head>
 <body>
                 <div>
 			{% for row in result[0] %}
-			<h1>{{ row['title'] }}</h1>
+			<h1 class="card bg-light mb-3" style="max-width: 50%;">{{ row['title'] }}</h1>
 
-			<h2>Release Date : {{ row['release_date'] }}</h2>
+			<h2 class="card bg-light mb-3" style="max-width: 50%;">Release Date : {{ row['release_date'] }}</h2>
 
-			<h2>Content Rating : {{ row['content_rating'] }}</h2>
+			<h2 class="card bg-light mb-3" style="max-width: 50%;">Content Rating : {{ row['content_rating'] }}</h2>
 
-			<h2>Running Time : {{ row['running_time']//60 }}h {{ row['running_time']%60 }}min</h2>
+			<h2 class="card bg-light mb-3" style="max-width: 50%;">Running Time : {{ row['running_time']//60 }}h {{ row['running_time']%60 }}min</h2>
 
-			<h2>Gross (Box Office) : {{ row['gross'] }}</h2>
+			<h2 class="card bg-light mb-3" style="max-width: 50%;">Gross (Box Office) : {{ row['gross'] }}</h2>
 
-			<h2>Story Line : </h2>
+			<h2 class="card bg-light mb-3" style="max-width: 50%;">Story Line : </h2>
 			
 
-			<p>{{ row['storyline'] }}<p>
+			<p class="card bg-light mb-3" style="max-width: 50%;">{{ row['storyline'] }}<p>
 			
 			{% endfor %}
+			<div class="card bg-light mb-3" style="max-width: 50%;">
+			<h2>Genres</h2>
+			{% for p in result[6] %}
+                        <form method="GET" action="/genre">
+                        <input type="hidden" name="name" value={{p['gid']}}>
+                        <button type="submit" class="link-button">{{p['genre']}}</button>
+                        </form>
+			{% endfor %}
+			</div>
+			<div class="card bg-light mb-3" style="max-width: 50%;">
 			<h2>Languages : </h2>
                         {% for p in result[4] %}
                         <div>
@@ -28,7 +40,8 @@
                         </form>
                         </div>
                         {% endfor %}
-
+			</div>
+			<div class="card bg-light mb-3" style="max-width: 50%;">
 			<h2>Actors : </h2>
 			{% for p in result[1] %}
 			<div>
@@ -38,7 +51,8 @@
                         </form>
 			</div>
 			{% endfor %}
-
+			</div>
+			<div class="card bg-light mb-3" style="max-width: 50%;">
 			<h2>Directors : </h2>
                         {% for p in result[2] %}
                         <div>
@@ -48,7 +62,8 @@
                         </form>
                         </div>
                         {% endfor %}
-			
+			</div>
+			<div class="card bg-light mb-3" style="max-width: 50%;">
 			<h2>Writers : </h2>
                         {% for p in result[3] %}
                         <div>
@@ -58,7 +73,8 @@
                         </form>
                         </div>
                         {% endfor %}
-	
+			</div>
+			<div class="card bg-light mb-3" style="max-width: 50%;"> 
 			<h2>Production Company : </h2>
                         {% for p in result[5] %}
                         <div>
@@ -68,6 +84,7 @@
                         </form>
                         </div>
                         {% endfor %}
+			</div>
 
 			
                 </div>

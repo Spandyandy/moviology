@@ -5,62 +5,76 @@
       font-family: arial;
     }
   </style>
-
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<a href="/"><h1 class="p-3 mb-2 bg-primary text-white">Moviology</h1></a></head>
 
 <body>
-  <a href="/"><h1>Moviology</h1></a>
-  <h2>Search any film you would like to learn more!</h2>
-<p><a href="another">Go to the other page</a></p>
+  <h1 style="margin:30px;">Search any film you would like to learn more!</h2>
 
-<form method="GET" action="/search">
-<p>Name of movie to search: <input type="text" name="name"> <input type="submit" value="Search"></p>
+<form class="form-inline" method="GET" action="/search" style="margin:30px;">
+<h1>Name of movie to search: <input class="form-control" type="text" name="name"> <input class="btn btn-primary mb-2" type="submit" value="Search"></h1>
 </form>
-<form method="GET" action="/searchprod">
-<p>Name of production(actor, producer, etc) name to search: <input type="text" name="name"> <input type="submit" value="Search"></p>
+<form class="form-inline" method="GET" action="/searchprod" style="margin:30px;">
+<h1>Name of production(actor, producer, etc) name to search: <input class="form-control" type="text" name="name"> <input class="btn btn-primary mb-2" type="submit" value="Search"></h1>
 </form>
 
 
-<a href="list">List of all movies</a></p>
 
-List by roles:
-<form method="GET" action="/list">
+<a href="list" class="btn btn-info" style="margin:30px;">List of all movies</a>
+
+<div class="card bg-light mb-3" style="margin: 30px; max-width: 20%;">
+<h3>List by genres:</h3>
+<form method="GET" action="/genre" class="form-inline">
+<select class="custom-select" name="name">
+{% for g in result[2] %}
+<option value={{ g['gid'] }}>{{g['genre']}}</option>
+{% endfor %}
+<input class="btn btn-primary mb-2" value="Submit" type="submit">
+</select>
+</form>
+</div>
+
+<div class="card bg-light mb-3" style="margin: 30px; max-width: 20%;">
+<h3>List by roles:</h3>
+<form method="GET" action="/list" class="form-inline">
 <input type="hidden" name="name" value=0>
-<button type="submit" class="link-button">Actor</button>
+<button class="btn btn-primary mb-2" type="submit">Actor</button>
 </form>  
-<form method="GET" action="/list">
+<form method="GET" action="/list" class="form-inline">
 <input type="hidden" name="name" value=1>
-<button type="submit" class="link-button">Director</button>
+<button type="submit"  class="btn btn-primary mb-2">Director</button>
 </form>  
-<form method="GET" action="/list">
+<form method="GET" action="/list" class="form-inline">
 <input type="hidden" name="name" value=2>
-<button type="submit" class="link-button">Writer</button>
+<button type="submit" class="btn btn-primary mb-2">Writer</button>
 </form>
+</div>
 
-
-
-List by languages:
-<form method="GET" action="/language">
-<select name="name">
+<div class="card bg-light mb-3" style="margin: 30px; max-width: 20%;">
+<h3>List by languages:</h3>
+<form method="GET" action="/language" class="form-inline">
+<select class="custom-select" name="name">
 {% for lang in result[0] %}
 <option value={{ lang['lid'] }}>{{lang['languagename']}}</option>
 {% endfor %}
-<input value="Submit" type="submit">
+<input class="btn btn-primary mb-2" value="Submit" type="submit">
 </select>
-
 </form>  
+</div>
 
-
-List by Production company:
-<form method="GET" action="/company">
-<select name="name">
+<div class="card bg-light mb-3" style="margin: 30px; max-width: 20%;">
+<h3>List by Production company:</h3>
+<form method="GET" action="/company" class="form-inline">
+<select class="custom-select" name="name">
 {% for comp in result[1] %}
 <option value={{ comp['pc_id'] }}>{{comp['title']}}</option>
 {% endfor %}
-<input value="Submit" type="submit">
+<input class="btn btn-primary mb-2" value="Submit" type="submit">
 </select>
 
 </form>  
-
+</div>
 
 
 

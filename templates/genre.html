@@ -1,0 +1,22 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<a href="/"><h1 class="p-3 mb-2 bg-primary text-white">Moviology</h1></a></head>
+<body>
+                <div>
+			{% for res in result[0] %}
+			<h1>Genre : {{ res['genre'] }}</h1>
+			{% endfor %}
+			
+			<h2>Films : </h2> 
+                        {% for row in result[1] %}
+                        <div>
+                        <form method="GET" action="/title">
+                        <input type="hidden" name="name" value={{row['mid']}}>
+                        <button type="submit" class="link-button">{{row['title']}}</button>
+                        </form>                 
+                        </div>
+                        {% endfor %}		
+		</div>
+
+</body></html>

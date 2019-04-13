@@ -118,10 +118,13 @@ def index():
   #
   cursor = g.conn.execute("SELECT lid, languagename FROM language")
   cursor2 = g.conn.execute("SELECT pc_id, title FROM production_company")
+  cursor3 = g.conn.execute("SELECT gid, genre FROM genres")
   res = cursor.fetchall();
   res2 = cursor2.fetchall();
+  res3 = cursor3.fetchall();
   cursor.close()
   cursor2.close()
+  cursor3.close()
 
   #
   # Flask uses Jinja templates, which is an extension to HTML where you can
@@ -155,7 +158,7 @@ def index():
   # render_template looks in the templates/ folder for files.
   # for example, the below file reads template/index.html
   #
-  return render_template("index.html", result = [res,res2])
+  return render_template("index.html", result = [res,res2,res3])
 
 
 
@@ -177,12 +180,18 @@ def another():
 @app.route('/list', methods=['GET'])
 def list():
   name = request.args.get('name', None)
+  sortby = request.args.get('sort', None)
   if(name != None):
-    cursor = g.conn.execute('SELECT P.*, R.title FROM Production P, has_Role H, Role R WHERE H.rid=%s and H.pid=P.pid AND R.rid=H.rid', name)
+    cursor = g.conn.execute('SELECT P.*, R.title FROM Production P, has_Role H, Role R WHERE H.rid=%s and H.pid=P.pid AND R.rid=H.rid ORDER BY P.name', name)
   else:
-    cursor = g.conn.execute('SELECT mid, title, release_date FROM movie')
+    if(sortby == None):
+      sortby = "release_date DESC"
+    cursor = g.conn.execute('SELECT * FROM movie ORDER BY ' + sortby)
+  print(sortby)
 
-  res = []
+  res=[]
+  if(sortby != None):
+    res = [sortby]
   for r in cursor:
     res.append(r)
   cursor.close()
@@ -236,6 +245,18 @@ def company():
   return render_template('company.html', result = [res,res2,res3,res4,res5])
 
 
+@app.route('/genre', methods=['GET'])
+def genre():
+  gid = request.args.get('name', None)
+  cursor = g.conn.execute('SELECT genre FROM genres WHERE gid=%s', gid)
+  cursor2 = g.conn.execute('SELECT M.mid, M.title FROM Movie M, Categorize C WHERE M.mid=C.mid and C.gid=%s', gid)
+  res = cursor.fetchall()
+  res2 = cursor2.fetchall()
+  cursor.close()
+  cursor2.close()
+  return render_template('genre.html', result = [res,res2])
+
+
 @app.route('/language', methods=['GET'])
 def language():
   lid = request.args.get('name', None)
@@ -265,19 +286,22 @@ def title():
   cursor4 = g.conn.execute('SELECT P.* FROM makes A, Production P, has_role H WHERE P.pid=A.pid AND H.pid=P.pid AND H.rid=2 and A.mid=%s', mid)
   cursor5 = g.conn.execute('SELECT L.* FROM language L, use_lang U WHERE L.lid=U.lid AND U.mid=%s',mid)
   cursor6 = g.conn.execute('SELECT PC.pc_id, PC.title FROM production_company PC, produces P WHERE PC.pc_id=P.pc_id AND P.mid=%s',mid)
+  cursor7 = g.conn.execute('SELECT G.gid, G.genre FROM genres G, categorize C WHERE G.gid=C.gid AND C.mid=%s',mid)
   res = cursor.fetchall()
   res2 = cursor2.fetchall()
   res3 = cursor3.fetchall()
   res4 = cursor4.fetchall()
   res5 = cursor5.fetchall()
   res6 = cursor6.fetchall()
+  res7 = cursor7.fetchall()
   cursor.close()
   cursor2.close()
   cursor3.close()
   cursor4.close()
   cursor5.close()
   cursor6.close()
-  return render_template('title.html', result = [res,res2,res3,res4,res5,res6])
+  cursor7.close()
+  return render_template('title.html', result = [res,res2,res3,res4,res5,res6,res7])
 
 @app.route('/production', methods=['GET'])
 def production():
